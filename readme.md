@@ -48,6 +48,7 @@ return [
     "icons" => array(
         "brand-icons" => array(
             "title" => "Brand Icons",
+            "class" => "brand"
             "icons" => array(
                 "google", "facebook", "twitter", "instagram"
             )
@@ -116,6 +117,16 @@ if ($icon = $page->get("iconField")) {
 ```php
 // MarkupFontIconPicker::render(YourIconField=string, Options=array)
 echo MarkupFontIconPicker::render($page->YourIconField, [
+        'prefix' => 'uk-icon-', // Icon class prefix, if you have different prefix, default is : "fa fa-"
+        'tag' => 'span', // Icon tag default is : "i"
+        'class' => 'fa-lg', // If you have extra cutom classes, for example : icons sizes, Array or Sting value
+        'style' => 'your custom styles if you have' // Array or String Value
+    ]);
+```
+Or to enable classes use
+```php
+// MarkupFontIconPicker::render2(YourIconField=string, YourPage=Page, Options=array)
+echo MarkupFontIconPicker::render2($page->YourIconField, $page, [
         'prefix' => 'uk-icon-', // Icon class prefix, if you have different prefix, default is : "fa fa-"
         'tag' => 'span', // Icon tag default is : "i"
         'class' => 'fa-lg', // If you have extra cutom classes, for example : icons sizes, Array or Sting value

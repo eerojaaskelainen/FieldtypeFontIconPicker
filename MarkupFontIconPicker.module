@@ -3,7 +3,7 @@
 /**
  * Class MarkupFontIconPicker
  *
- * @author			: İskender TOTOĞLU, @ukyo (community), @trk (Github)
+ * @author			: İskender TOTOĞLU, @ukyo (community), @trk (Github), @eerojaaskelainen (Github)
  * @website			: http://altivebir.com.tr
  * @projectWebsite	: https://github.com/trk/FieldtypeFontIconPicker
  */
@@ -13,8 +13,8 @@ class MarkupFontIconPicker extends WireData implements Module {
         return array(
             'title'     => "MarkupFontIconPicker",
             'summary'   => __('Allow you to call icons simply for InputFieldIconPicker inputs.'),
-            'version'   => 202,
-            'author'    => 'İskender TOTOĞLU | @ukyo(community), @trk (Github), http://altivebir.com.tr',
+            'version'   => 203,
+            'author'    => 'İskender TOTOĞLU | @ukyo(community), @trk (Github), http://altivebir.com.tr, @eerojaaskelainen (Github)',
             'href'      => 'https://github.com/trk/FieldtypeFontIconPicker',
             'icon'      => 'flag',
             'autoload' => true,
@@ -56,5 +56,45 @@ class MarkupFontIconPicker extends WireData implements Module {
         $style = (!empty($style)) ? " style='" . implode(' ', $style) . "'" : "";
 
         return "<{$tag}{$class}{$style}></{$tag}>";
+    }
+
+    public static function render2(string $fieldName, Page $page, $options = array()) {
+        //$resources = wire('modules')->get("FieldtypeFontIconPicker")->resources();
+        $field = $page->fields->get($fieldName);
+        if (empty($field))
+            return '';
+
+        $resources = $field->type->resources();   
+        $iconLibrary = $field->font_library;
+        
+        $rndrd = $page->$field;
+ 
+        if (! array_key_exists('class', $options)) 
+            $options['class'] = array();
+        elseif (!is_array($options['class']))
+            $options['class'] = array_filter(explode(' ', $options['class']));
+        
+        if ($iconLibrary) {
+            $resourceF = array_filter($resources,function($v) use ($iconLibrary){return $v['title'] == $iconLibrary; });
+            if (!count($resourceF)) 
+                return self::render($rndrd, $options);
+
+            $resource = reset($resourceF);
+            $source = include $resource["file"];
+            if ($source === false)
+                return self::render($rndrd, $options);
+
+            $resource["icons"] = isset($source["icons"]) ? $source["icons"] : array();
+
+            $iconF = array_filter($resource["icons"],function($v) use ($rndrd) { return array_search($rndrd, $v['icons']) !== false; });
+            $icon = reset($iconF);
+            
+            if ($icon && !empty($icon['class'])) {
+                $options['class'][] = $icon['class'];
+            }
+        }
+
+        return self::render($rndrd, $options);
+
     }
 }

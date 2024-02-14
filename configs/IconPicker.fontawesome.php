@@ -690,6 +690,7 @@ return array(
         ),
         'brand-icons' => array(
             'title' => __('Brand Icons'),
+            'class'=> 'fa-brands',
             'icons' => array(
                 '500px',
                 'adn',
